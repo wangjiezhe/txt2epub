@@ -83,7 +83,7 @@ class Txt2Epub:
         spine: list[str | epub.EpubHtml] = [info, message, "nav"]
         toc = []
         for chapter_id, chapter_content_full in enumerate(chapters):
-            chapter_lines = chapter_content_full.split("\n")
+            chapter_lines = chapter_content_full.lstrip("\n").split("\n")
             chapter_title = chapter_lines[0]
             chapter_content = chapter_lines[1:]
 
