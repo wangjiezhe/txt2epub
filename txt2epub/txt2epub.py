@@ -60,6 +60,7 @@ class Txt2Epub:
             file_name="info.xhtml",
             lang=book_language,
         )
+        info.add_link(href="style.css", rel="stylesheet", type="text/css")
         info.content = "<h1>{}</h1><h2>{}</h2>".format(book_title, book_author)
         book.add_item(info)
 
@@ -69,8 +70,12 @@ class Txt2Epub:
             file_name="message.xhtml",
             lang=book_language,
         )
-        message.content = "".join(
-            "<p>{}</p>".format(line) for line in chapters.pop(0).split("\n")
+        message.add_link(href="style.css", rel="stylesheet", type="text/css")
+        message.content = "<div>{}</div>".format(
+            "".join(
+                "<p>{}</p>".format(line.lstrip())
+                for line in chapters.pop(0).split("\n")
+            )
         )
         book.add_item(message)
 
@@ -88,9 +93,10 @@ class Txt2Epub:
                 file_name="chap_{:02d}.xhtml".format(chapter_id + 1),
                 lang=book_language,
             )
-            chapter.content = "<h1>{}</h1>{}".format(
+            chapter.add_link(href="style.css", rel="stylesheet", type="text/css")
+            chapter.content = "<h2>{}</h2><div>{}</div>".format(
                 chapter_title,
-                "".join("<p>{}</p>".format(line) for line in chapter_content),
+                "".join("<p>{}</p>".format(line.lstrip()) for line in chapter_content),
             )
 
             # add chapter to the book and TOC
@@ -104,7 +110,63 @@ class Txt2Epub:
 
         # add navigation files
         book.add_item(epub.EpubNcx())
-        book.add_item(epub.EpubNav())
+        nav = epub.EpubNav(title="目录")
+        nav.add_link(href="toc.css", rel="stylesheet", type="text/css")
+        book.add_item(nav)
+
+        # add CSS style
+        style_css = epub.EpubItem(
+            uid="style_content",
+            file_name="style.css",
+            media_type="text/css",
+            content="""h1 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: xx-large;
+  margin-top: 3.2em;
+  margin-bottom: 3.3em;
+}
+
+h2 {
+  line-height: 130%;
+  text-align: center;
+  font-weight: bold;
+  font-size: x-large;
+  margin-top: 1.2em;
+  margin-bottom: 2.3em;
+}
+
+div {
+  margin: 0;
+  padding: 0;
+  text-align: justify;
+}
+
+p {
+  text-indent: 2em;
+  display: block;
+  line-height: 1.3em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+""",
+        )
+        book.add_item(style_css)
+
+        toc_css = epub.EpubItem(
+            uid="style_toc",
+            file_name="toc.css",
+            media_type="text/css",
+            content="""h2 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  text-align: center;
+}
+""",
+        )
+        book.add_item(toc_css)
 
         # generate new file path if not specified
         if output_file is None:
