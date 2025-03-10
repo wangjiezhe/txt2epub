@@ -53,8 +53,29 @@ class Txt2Epub:
         book.add_author(book_author)
         book.set_language(book_language)
         book.set_cover("cover.jpg", book_cover_jpeg)
+
+        # add info page
+        info = epub.EpubHtml(
+            title="Info",
+            file_name="info.xhtml",
+            lang=book_language,
+        )
+        info.content = "<h1>{}</h1><h2>{}</h2>".format(book_title, book_author)
+        book.add_item(info)
+
+        # add message page
+        message = epub.EpubHtml(
+            title="Message",
+            file_name="message.xhtml",
+            lang=book_language,
+        )
+        message.content = "".join(
+            "<p>{}</p>".format(line) for line in chapters.pop(0).split("\n")
+        )
+        book.add_item(message)
+
         # create chapters
-        spine: list[str | epub.EpubHtml] = ["nav"]
+        spine: list[str | epub.EpubHtml] = [info, message, "nav"]
         toc = []
         for chapter_id, chapter_content_full in enumerate(chapters):
             chapter_lines = chapter_content_full.split("\n")
