@@ -41,7 +41,7 @@ class Txt2Epub:
 
         # convert cover image to JPEG
         book_cover_jpeg = None
-        if book_cover is not None and book_cover != "":
+        if book_cover is not None and book_cover != pathlib.Path():
             book_cover_jpeg = convert_image_to_jpeg(book_cover)
 
         # create new EPUB book
