@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import pathlib
+import re
 import uuid
 from typing import Optional
 
@@ -23,8 +24,12 @@ class Txt2Epub:
     ):
         # generate fields if not specified
         book_identifier = book_identifier or str(uuid.uuid4())
-        book_title = book_title or input_file.stem
-        book_author = book_author or "Unknown"
+        if match := re.match(r"^(.*?)\((.*?)\)$", input_file.stem):
+            book_title = book_title or match.group(1)
+            book_author = book_author or match.group(2)
+        else:
+            book_title = book_title or input_file.stem
+            book_author = book_author or "Unknown"
 
         # read text from file
         with input_file.open("r", encoding="utf-8") as txt_file:
