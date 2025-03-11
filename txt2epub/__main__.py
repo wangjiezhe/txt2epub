@@ -83,6 +83,7 @@ def main() -> int:
             book_author=args.author,
             book_language=args.language,
             book_cover=args.cover,
+            linebreaks=args.linebreaks,
         )
     elif args.command == "gui":
         launch_gui()
