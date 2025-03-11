@@ -25,7 +25,7 @@ class Txt2Epub:
     ):
         # generate fields if not specified
         book_identifier = book_identifier or str(uuid.uuid4())
-        if match := re.match(r"^(.*?)\((.*?)\)$", input_file.stem):
+        if match := re.match(r"^(.*)\((.*?)\)$", input_file.stem):
             book_title = book_title or match.group(1)
             book_author = book_author or match.group(2)
         else:
