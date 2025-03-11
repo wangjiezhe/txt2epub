@@ -28,6 +28,7 @@ homepage = "https://github.com/k4yt3x/txt2epub/"
 
 [project.scripts]
 txt2epub = "txt2epub.__main__:main"
+txt2epub-gui = "txt2epub.__main__:launch_gui"
 
 [tool.isort]
 profile = "black"
