@@ -75,6 +75,12 @@ class Txt2EpubGUI(QMainWindow):
         cover_layout.addWidget(self.cover_button)
         form_layout.addRow(QLabel("Cover Image:", self), cover_layout)
 
+        self.linebreaks_input = QLineEdit(self)
+        self.linebreaks_input.setPlaceholderText(
+            "Enter number of line breaks for chapter split"
+        )
+        form_layout.addRow(QLabel("Line Breaks:", self), self.linebreaks_input)
+
         layout.addLayout(form_layout)
 
         self.label = QLabel(
@@ -103,6 +109,7 @@ class Txt2EpubGUI(QMainWindow):
         self.language_input.clear()
         self.author_input.clear()
         self.cover_input.clear()
+        self.linebreaks_input.clear()
         self.label.setText("Drop a file here or select a file using the button below")
 
     def select_file(self):
@@ -153,6 +160,11 @@ class Txt2EpubGUI(QMainWindow):
                     book_author=self.author_input.text() or "Unknown Author",
                     book_language=self.language_input.text() or "en",
                     book_cover=pathlib.Path(self.cover_input.text()),
+                    linebreaks=(
+                        int(self.linebreaks_input.text())
+                        if self.linebreaks_input.text() != ""
+                        else 3
+                    ),
                 )
                 self.label.setText(f"ePub generated for: {self.file_path.name}")
                 QMessageBox.information(

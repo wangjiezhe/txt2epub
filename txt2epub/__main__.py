@@ -62,6 +62,13 @@ def main() -> int:
         type=pathlib.Path,
         help="Path to the cover image of the book",
     )
+    convert_parser.add_argument(
+        "-n",
+        "--linebreaks",
+        type=int,
+        help="Number of line breaks to split chapters",
+        default=3,
+    )
 
     subparsers.add_parser("gui", help="launch the GUI")
 

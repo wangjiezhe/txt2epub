@@ -21,6 +21,7 @@ class Txt2Epub:
         book_author: Optional[str] = None,
         book_language: Optional[str] = None,
         book_cover: Optional[pathlib.Path] = None,
+        linebreaks: int = 3,
     ):
         # generate fields if not specified
         book_identifier = book_identifier or str(uuid.uuid4())
@@ -42,7 +43,7 @@ class Txt2Epub:
                 book_language = "en"
 
         # split text into chapters
-        chapters = book_text.split("\n\n\n")
+        chapters = book_text.split("\n" * linebreaks)
 
         # convert cover image to JPEG
         book_cover_jpeg = None
