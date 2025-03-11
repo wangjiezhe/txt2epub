@@ -85,13 +85,45 @@ class Txt2Epub:
         )
         book.add_item(message)
 
+        # check if txt has section level with syntax
+        # =============
+        # Section Title
+        # =============
+        if re.match(r"^={3,}", chapters[0].lstrip("\n")):
+            use_section = True
+        else:
+            use_section = False
+
         # create chapters
         spine: list[str | epub.EpubHtml] = [info, message, "nav"]
         toc = []
+        current_section = []
         for chapter_id, chapter_content_full in enumerate(chapters):
             chapter_lines = chapter_content_full.lstrip("\n").split("\n")
             chapter_title = chapter_lines[0]
             chapter_content = chapter_lines[1:]
+
+            if use_section:
+                if re.match(r"^={3,}$", chapter_title):
+                    if current_section != []:
+                        toc.append(current_section)
+                        current_section = []
+                    while (section_title := chapter_content.pop(0)) == "":
+                        continue
+                    section = epub.EpubHtml(
+                        title=section_title,
+                        file_name="chap_{:02d}.xhtml".format(chapter_id + 1),
+                        lang=book_language,
+                    )
+                    section.add_link(
+                        href="style.css", rel="stylesheet", type="text/css"
+                    )
+                    section.content = "<h1>{}</h1>".format(section_title)
+                    book.add_item(section)
+                    spine.append(section)
+                    current_section.append(section)
+                    current_section.append([])
+                    continue
 
             # write chapter title and contents
             chapter = epub.EpubHtml(
@@ -108,7 +140,10 @@ class Txt2Epub:
             # add chapter to the book and TOC
             book.add_item(chapter)
             spine.append(chapter)
-            toc.append(chapter)
+            if use_section:
+                current_section[1].append(chapter)
+            else:
+                toc.append(chapter)
 
         # update book spine and TOC
         book.spine = spine
@@ -160,17 +195,28 @@ p {
         )
         book.add_item(style_css)
 
-        toc_css = epub.EpubItem(
-            uid="style_toc",
-            file_name="toc.css",
-            media_type="text/css",
-            content="""h2 {
+        toc_css_content = """h2 {
   font-size: 2em;
   font-weight: bold;
   margin-bottom: 1em;
   text-align: center;
 }
-""",
+"""
+        if use_section:
+            toc_css_content += """
+ol {
+  list-style-type: upper-roman;
+}
+
+ol ol {
+    list-style-type: decimal;
+}
+"""
+        toc_css = epub.EpubItem(
+            uid="style_toc",
+            file_name="toc.css",
+            media_type="text/css",
+            content=toc_css_content,
         )
         book.add_item(toc_css)
 
