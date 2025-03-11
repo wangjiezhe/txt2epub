@@ -145,6 +145,9 @@ class Txt2Epub:
             else:
                 toc.append(chapter)
 
+        if use_section:
+            toc.append(current_section)
+
         # update book spine and TOC
         book.spine = spine
         book.toc = toc
