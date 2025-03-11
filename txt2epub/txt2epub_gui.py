@@ -130,7 +130,10 @@ class Txt2EpubGUI(QMainWindow):
                         self.language_input.setText(langdetect.detect(text))
                     except langdetect.lang_detect_exception.LangDetectException:
                         self.language_input.setText("en")
-                if match := re.match(r"^(.*)\((.*?)\)$", self.file_path.stem):
+                if match := re.match(r"^《(.*)》(.*?)$", self.file_path.stem):
+                    self.title_input.setText(match.group(1))
+                    self.author_input.setText(match.group(2))
+                elif match := re.match(r"^(.*)\((.*?)\)$", self.file_path.stem):
                     self.title_input.setText(match.group(1))
                     self.author_input.setText(match.group(2))
                 else:
