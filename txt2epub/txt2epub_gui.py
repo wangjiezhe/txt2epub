@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import pathlib
+import re
 import traceback
 
 import langdetect
@@ -129,7 +130,11 @@ class Txt2EpubGUI(QMainWindow):
                         self.language_input.setText(langdetect.detect(text))
                     except langdetect.lang_detect_exception.LangDetectException:
                         self.language_input.setText("en")
-                self.title_input.setText(self.file_path.stem)
+                if match := re.match(r"^(.*?)\((.*?)\)$", self.file_path.stem):
+                    self.title_input.setText(match.group(1))
+                    self.author_input.setText(match.group(2))
+                else:
+                    self.title_input.setText(self.file_path.stem)
                 self.label.setText(f"Selected file: {self.file_path.name}")
         except Exception as error:
             self.clear_fields()
