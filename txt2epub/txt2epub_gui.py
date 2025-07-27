@@ -136,6 +136,11 @@ class Txt2EpubGUI(QMainWindow):
                 elif match := re.match(r"^(.*)\((.*?)\)$", self.file_path.stem):
                     self.title_input.setText(match.group(1))
                     self.author_input.setText(match.group(2))
+                elif match := re.match(
+                    r"^【(.*)】.*?作者：(.*?)$", self.file_path.stem
+                ):
+                    self.title_input.setText(match.group(1))
+                    self.author_input.setText(match.group(2))
                 else:
                     self.title_input.setText(self.file_path.stem)
                 self.label.setText(f"Selected file: {self.file_path.name}")

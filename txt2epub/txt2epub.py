@@ -31,6 +31,9 @@ class Txt2Epub:
         elif match := re.match(r"^(.*)\((.*?)\)$", input_file.stem):
             book_title = book_title or match.group(1)
             book_author = book_author or match.group(2)
+        elif match := re.match(r"^【(.*)】.*?作者：(.*?)$", input_file.stem):
+            book_title = book_title or match.group(1)
+            book_author = book_author or match.group(2)
         else:
             book_title = book_title or input_file.stem
             book_author = book_author or "Unknown"
