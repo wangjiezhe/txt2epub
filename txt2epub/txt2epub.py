@@ -103,7 +103,7 @@ class Txt2Epub:
         current_section = []
         for chapter_id, chapter_content_full in enumerate(chapters):
             chapter_lines = chapter_content_full.lstrip("\n").split("\n")
-            chapter_title = chapter_lines[0]
+            chapter_title = chapter_lines[0].lstrip("　")
             chapter_content = chapter_lines[1:]
 
             if use_section:
